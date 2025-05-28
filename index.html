@@ -3,67 +3,34 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CRYZIX Key System – Result</title>
+  <title>CRYZIX Key System Result</title>
   <script>
-    // Anti-bypass: if they didn’t come from exactly that URL, bounce instantly
-    if (!document.referrer.startsWith("https://loot-link.com/s?8R6iFNyF")) {
-      window.location.href = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgrTTAqRVtf-gn-0TIHdlqrgTur0VaqclgmSmG2p7hv0qZbPmWlbC7eykX&s=10";
-    }
+    document.addEventListener('DOMContentLoaded', () => {
+      const requiredReferrer = 'https://loot-link.com/s?8R6iFNyF';
+      const blockedURL = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgrTTAqRVtf-gn-0TIHdlqrgTur0VaqclgmSmG2p7hv0qZbPmWlbC7eykX&s=10';
+      const passKey = 'passedCheckpoint';
+      const passed = localStorage.getItem(passKey) === 'true';
+      if (document.referrer === requiredReferrer) {
+        localStorage.setItem(passKey, 'true');
+      }
+      if (!passed && document.referrer !== requiredReferrer) {
+        window.location.href = blockedURL;
+        return;
+      }
+    });
   </script>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #1a0000, #2d0000, #0f0f0f);
-      min-height: 100vh;
-      display: flex; justify-content: center; align-items: center;
-      color: #fff;
-    }
-    .container {
-      background: rgba(20,0,0,0.9);
-      border: 2px solid #8B0000;
-      border-radius: 15px;
-      padding: 30px;
-      max-width: 500px;
-      width: 90%;
-      box-shadow: 0 10px 30px rgba(139,0,0,0.3);
-      backdrop-filter: blur(10px);
-      position: relative;
-      text-align: center;
-    }
-    .logo {
-      width: 60px; height: 60px;
-      background: #DC143C;
-      border-radius: 50%;
-      margin: 0 auto 20px;
-      box-shadow: 0 0 15px rgba(220,20,60,0.5);
-    }
-    h2 { font-size: 24px; margin-bottom: 15px; color: #DC143C; }
-    p { color: #ccc; margin-bottom: 20px; line-height: 1.6; }
-    .key-container {
-      background: rgba(139,0,0,0.1);
-      border-radius: 8px;
-      padding: 15px;
-      margin: 20px 0;
-      border: 1px solid #8B0000;
-    }
-    .key-text {
-      font-family: monospace; font-size: 1.2rem;
-      letter-spacing: 1px; color: #DC143C; word-break: break-all;
-    }
-    .expiry {
-      margin-bottom: 25px; font-size: 0.9rem; color: #aaa;
-    }
-    .copy-button {
-      background: linear-gradient(45deg, #2a9d8f, #20B2AA);
-      color: #fff; border: none; padding: 12px 25px;
-      border-radius: 8px; cursor: pointer; font-weight: bold;
-      transition: all 0.3s ease;
-    }
-    .copy-button:hover {
-      background: linear-gradient(45deg, #20B2AA, #48CAE4);
-      transform: translateY(-2px);
-    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:Arial;background:linear-gradient(135deg,#1a0000,#2d0000,#0f0f0f);min-height:100vh;display:flex;justify-content:center;align-items:center;color:#fff}
+    .container{background:rgba(20,0,0,0.9);border:2px solid #8B0000;border-radius:15px;padding:30px;max-width:500px;width:90%;box-shadow:0 10px 30px rgba(139,0,0,0.3);backdrop-filter:blur(10px);position:relative;text-align:center}
+    .logo{width:60px;height:60px;background:#DC143C;border-radius:50%;margin:0 auto 20px;box-shadow:0 0 15px rgba(220,20,60,0.5)}
+    h2{font-size:24px;margin-bottom:15px;color:#DC143C}
+    p{color:#ccc;margin-bottom:20px;line-height:1.6}
+    .key-container{background:rgba(139,0,0,0.1);border-radius:8px;padding:15px;margin:20px 0;border:1px solid #8B0000}
+    .key-text{font-family:monospace;font-size:1.2rem;letter-spacing:1px;color:#DC143C;word-break:break-all}
+    .expiry{margin-bottom:25px;font-size:0.9rem;color:#aaa}
+    .copy-button{background:linear-gradient(45deg,#2a9d8f,#20B2AA);color:#fff;border:none;padding:12px 25px;border-radius:8px;cursor:pointer;font-weight:bold;transition:all .3s ease}
+    .copy-button:hover{background:linear-gradient(45deg,#20B2AA,#48CAE4);transform:translateY(-2px)}
   </style>
 </head>
 <body>
@@ -77,12 +44,13 @@
     <div class="expiry" id="expiry-text">Expires in: 23h 59m 57s</div>
     <button id="copy-button" class="copy-button">Copy Key</button>
   </div>
-
   <script>
-    // same 4-char marker hash
     function simpleHash(str) {
-      let hash = 0, chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-      for (let c of str) hash = (hash * 31 + c.charCodeAt(0)) >>> 0;
+      let hash = 0;
+      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      for (let i = 0; i < str.length; i++) {
+        hash = (hash * 31 + str.charCodeAt(i)) >>> 0;
+      }
       let out = "";
       for (let i = 0; i < 4; i++) {
         hash = (hash * 17 + (hash % 13)) % 0x10000;
@@ -90,38 +58,38 @@
       }
       return out;
     }
-    // 8 random chars
-    function randomPart(n=8) {
-      let s="", chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-      while(n--) s += chars[Math.floor(Math.random()*chars.length)];
+    function randomPart(n = 8) {
+      let s = "";
+      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      while (n--) s += chars[Math.floor(Math.random() * chars.length)];
       return s;
     }
-    // build 12-char key
     function generateKey() {
       return randomPart() + simpleHash("LennyOnTop");
     }
-
-    document.addEventListener("DOMContentLoaded", ()=> {
+    document.addEventListener("DOMContentLoaded", () => {
       const keyEl = document.getElementById("key-text");
       keyEl.textContent = generateKey();
-
-      // copy
-      document.getElementById("copy-button").onclick = function(){
-        navigator.clipboard.writeText(keyEl.textContent).then(()=>{
-          this.textContent="Copied!";
-          setTimeout(()=>this.textContent="Copy Key",2000);
+      document.getElementById("copy-button").onclick = function() {
+        navigator.clipboard.writeText(keyEl.textContent).then(() => {
+          this.textContent = "Copied!";
+          setTimeout(() => this.textContent = "Copy Key", 2000);
         });
       };
-
-      // countdown
-      let secs = 24*3600-3;
+      let secs = 24 * 3600 - 3;
       const expEl = document.getElementById("expiry-text");
-      const iv = setInterval(()=>{
-        if(secs<=0){ expEl.textContent="Expired"; clearInterval(iv); return; }
-        const h=Math.floor(secs/3600), m=Math.floor((secs%3600)/60), s=secs%60;
-        expEl.textContent=`Expires in: ${h}h ${m}m ${s}s`;
+      const iv = setInterval(() => {
+        if (secs <= 0) {
+          expEl.textContent = "Expired";
+          clearInterval(iv);
+          return;
+        }
+        const h = Math.floor(secs / 3600),
+              m = Math.floor((secs % 3600) / 60),
+              s = secs % 60;
+        expEl.textContent = `Expires in: ${h}h ${m}m ${s}s`;
         secs--;
-      },1000);
+      }, 1000);
     });
   </script>
 </body>
